@@ -14,18 +14,24 @@ processed_df = preprocess_df(raw_df)
 '''
 
 
-my_token = '9a9eaeaf20d248bf8f0cce4ee3b0445b'
+def get_query(query):
+
+    # Access token for API
+    my_token = '9a9eaeaf20d248bf8f0cce4ee3b0445b'
+    # Get data
+    connection = http.client.HTTPConnection('api.football-data.org')
+    headers = { 'X-Auth-Token': my_token }
+    connection.request('GET', query, None, headers)
+    json_data = json.loads(connection.getresponse().read().decode())
+
+    return json_data
 
 # Uses the following api API: https://www.football-data.org/
 def download_data(league_name, date_min, date_max):
 
-	# Save some stuff
+    # Save some stuff
     league_ids = {"BSA": 2013,"BL": 2002,"FL1": 2015,"PL": 2021,"ELC": 2016,
-    			  "PD": 2014,"SA": 2019,"PPL": 2017,"DED": 2003,"CL": 2001}
-
-    # Access token for API
-	my_token = '9a9eaeaf20d248bf8f0cce4ee3b0445b'
-
+                  "PD": 2014,"SA": 2019,"PPL": 2017,"DED": 2003,"CL": 2001}
 
     # Check input
     if league_name not in list(league_ids):
@@ -36,15 +42,10 @@ def download_data(league_name, date_min, date_max):
     # Create query
     query='/v2/competitions/{}/matches?dateFrom={}&dateTo={}'.format(league_ids[league_name], date_min, date_max) 
     
-    # Get data
-    connection = http.client.HTTPConnection('api.football-data.org')
-    headers = { 'X-Auth-Token': my_token }
-    connection.request('GET', query, None, headers)
-    json_data = json.loads(connection.getresponse().read().decode())
-    
-    return json_data
+    return get_query(query)
         
-        
+            
+
 
 # Get columns from json for each match
 def extract_from_json(single_match):
@@ -61,6 +62,7 @@ def extract_from_json(single_match):
     match['season_id'] = single_match['season']['id']
     match['matchday'] = single_match['matchday']
     match['date'] = single_match['utcDate']
+    match['status'] = single_match['status']
     return match
 
 
@@ -80,6 +82,7 @@ def split_games(match):
     score_h['goals_scored'] = match['goals_h']
     score_h['goals_conceded'] = match['goals_a']
     score_h['date'] = match['date']
+    score_h['played'] = int(match['status'] == 'FINISHED')
     # Away datapoint
     score_a = {}
     score_a['team'] = clean_team_name(match['team_a_name'])
@@ -88,6 +91,7 @@ def split_games(match):
     score_a['goals_scored'] = match['goals_a']
     score_a['goals_conceded'] = match['goals_h']
     score_a['date'] = match['date']
+    score_a['played'] = int(match['status'] == 'FINISHED')
 
     return score_h, score_a
  
@@ -103,6 +107,34 @@ def create_df(response):
     return df
 
 
+# Create features from dataframe (and one-hot encode)
+def preprocess_df(scores_df):
+    
+    # Blank dataframe
+    processed_df = pd.DataFrame()
+    processed_df['date'] = scores_df['date']
+    # List of all teams
+    teams = list(set(scores_df['team']))
+
+    # Team features
+    for t in teams:
+        m_team = (scores_df['team'] == t)
+        processed_df['f|team|'+t] = m_team.astype(int)
+    # Opponent features
+    for t in teams:
+        m_opp = (scores_df['opponent'] == t)
+        processed_df['f|opp|'+t] = m_opp.astype(int)
+
+    # Home/away feature
+    processed_df['f|home'] = scores_df['home'].astype(int)
+    # Target variable
+    processed_df['p|goals|scored'] = scores_df['goals_scored']
+    processed_df['p|goals|conceded'] = scores_df['goals_conceded']
+    
+    processed_df['f|played'] = scores_df['played']
+
+    return processed_df
+    
 
 
 
