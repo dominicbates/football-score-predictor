@@ -2,7 +2,7 @@ from sklearn import linear_model
 import numpy as np
 
 
-class PoissonRegressionModel:
+class PoissonRegressor:
     
     def __init__(self, config):
         
