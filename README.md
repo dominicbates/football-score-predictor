@@ -22,5 +22,5 @@ Contains the `PoissonRegressor` class, which can be used, along with a config fi
 2. Create model validation approach (training/test sets)
 3. Improve model performance (features, time window, test/train validation)
 4. Investigate covariance between two teams scores
-5. Create bayesian model + encorporate pdfs in to predictions
+5. Create bayesian model + encorporate posteriors in to goals pdf
 6. Productionise: (Create file to extract data + train prod models from command line to file, automate push to google sheet, build dashboard)
