@@ -41,7 +41,6 @@ class PoissonRegressor:
     def generate_goals_pdf(self, df, max_goals = 10, n_draws = 10000):
     
         df = df.reset_index(level=None, drop=True) # Incase index is not 0,1,2...
-        ### SUPER INNEFFICIENT AND NOT EXACT - DO IT ANALYTICALLY
         prediction_means = self.predict(df)
         
         # Create blank columns
@@ -50,14 +49,16 @@ class PoissonRegressor:
         
         # Simulate n_goals for each match ('n_draws' times)
         for n in range(len(prediction_means)):
+        ####### SUPER INNEFFICIENT AND NOT EXACT - DO IT ANALYTICALLY
             simulated_goals = np.random.poisson(prediction_means[n], size=n_draws)
             
             for g in range(max_goals+1):
                 prob_g = (simulated_goals == g).sum()/n_draws # Number of draws with n_goals = g
+        #############################################################
                 df.loc[n,'p|prob_'+str(g)+'_goals'] = prob_g
 
          # Return oroginal dataframe with extrac columns
          return df
 
 
-         
+
