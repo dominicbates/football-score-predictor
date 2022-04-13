@@ -1,11 +1,26 @@
 # Football-score-predictor
 
-Tool for predicting football scores
+Tool for predicting football scores. 
+
+Data is extracted from the very useful football API https://www.football-data.org/
+
+I use a simple Poisson GLM to model football scores
 
 ### 1. data_extractor.py
 
-Used to send query to https://www.football-data.org/ to extract historical football scores
+Contains `download_data()`, which queries the API and gets historical data as json. Also contains `create_df()` and `preprocess_df()` for  processing the raw json and then creating a dataframe ready for trianing
 
-### 2. scores_model.py
 
-Collection of functions for building model 
+### 2. regressor.py
+
+Contains the `PoissonRegressor` class, which can be used, along with a config file, to train a Poisson GLM, predict mean goals, and also calculate a pdf of goals
+
+
+### To Do:
+
+1. Improve speed / precision of pdf calculation
+2. Create model validation approach (training/test sets)
+3. Improve model performance (features, time window, test/train validation)
+4. Investigate covariance between two teams scores
+5. Create bayesian model + encorporate pdfs in to predictions
+6. Productionise: (Create file to extract data + train prod models from command line to file, automate push to google sheet, build dashboard)
