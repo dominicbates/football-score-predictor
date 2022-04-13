@@ -13,7 +13,7 @@ Contains `download_data()`, which queries the API and gets historical data as js
 
 ### 2. regressor.py
 
-Contains the `PoissonRegressor` class, which can be used, along with a config file, to train a Poisson GLM, predict mean goals, and also calculate a pdf of goals
+Contains the `PoissonRegressor` class, which can be used, along with a config file, to train a Poisson GLM, predict expected goals, and also calculate a pdf of goals
 
 
 ### To Do:
