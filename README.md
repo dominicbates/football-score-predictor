@@ -18,9 +18,11 @@ Contains the `PoissonRegressor` class, which can be used, along with a config fi
 
 ### To Do:
 
-1. Improve speed / precision of pdf calculation
-2. Create model validation approach (training/test sets)
-3. Improve model performance (features, time window, test/train validation)
-4. Investigate covariance between two teams scores
-5. Create bayesian model + encorporate posteriors in to goals pdf
-6. Productionise: (Create file to extract data + train prod models from command line to file, automate push to google sheet, build dashboard)
+1. Create score predictor function (randomly sample two pdfs and compute socre probabilities + win/draw/loss probability) - think about where this should go
+2. Add negative option to regression class (rename GoalsRegressor) and add to random draw / score predictor function (self.method = 'poisson' or 'negative_binomial') 
+3. Can we make pdf calculation exsct, rather than a random sample
+4. Create model validation approach (training/test sets)
+5. Improve model performance (features, time window, test/train validation)
+6. Investigate covariance between two teams scores
+7. Create bayesian model + encorporate posteriors in to goals pdf
+8. Productionise: (Create file to extract data + train prod models from command line to file, automate push to google sheet, build dashboard)
