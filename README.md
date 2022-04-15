@@ -19,7 +19,7 @@ Contains the `PoissonRegressor` class, which can be used, along with a config fi
 ### To Do:
 
 1. Create score predictor function (randomly sample two pdfs and compute socre probabilities + win/draw/loss probability) - think about where this should go
-2. Add negative option to regression class (rename GoalsRegressor) and add to random draw / score predictor function (self.method = 'poisson' or 'negative_binomial') 
+2. Add negative binomial option to regression class (rename GoalsRegressor) and add to random draw / score predictor function (self.method = 'poisson' or 'negative_binomial') 
 3. Can we make pdf calculation exsct, rather than a random sample
 4. Create model validation approach (training/test sets)
 5. Improve model performance (features, time window, test/train validation)
