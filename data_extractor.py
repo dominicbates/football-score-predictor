@@ -83,6 +83,7 @@ def split_games(match):
     score_h['goals_conceded'] = match['goals_a']
     score_h['date'] = match['date']
     score_h['played'] = int(match['status'] == 'FINISHED')
+    score_h['match_id'] = match['match_id']
     # Away datapoint
     score_a = {}
     score_a['team'] = clean_team_name(match['team_a_name'])
@@ -92,6 +93,7 @@ def split_games(match):
     score_a['goals_conceded'] = match['goals_h']
     score_a['date'] = match['date']
     score_a['played'] = int(match['status'] == 'FINISHED')
+    score_a['match_id'] = match['match_id']
 
     return score_h, score_a
  
@@ -101,7 +103,7 @@ def create_df(response):
     df = pd.DataFrame()
     for r in response['matches']:
         samples = split_games(extract_from_json(r))
-        df = df.append(samples[0], ignore_index = True)
+        df = df.append(samples[0], ignore_index = True) # A bit inefficient but it's all good
         df = df.append(samples[1], ignore_index = True)
     df['date'] = pd.to_datetime(df['date'])
     return df
@@ -113,6 +115,10 @@ def preprocess_df(scores_df):
     # Blank dataframe
     processed_df = pd.DataFrame()
     processed_df['date'] = scores_df['date']
+    processed_df['match_id'] = scores_df['match_id']
+    processed_df['team'] = scores_df['team']
+    processed_df['opponent'] = scores_df['opponent']	
+    processed_df['played'] = scores_df['played']
     # List of all teams
     teams = list(set(scores_df['team']))
 
