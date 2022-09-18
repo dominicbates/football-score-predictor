@@ -12,12 +12,12 @@ production_config = {'fit_intercept':False,
           'features':features}
 print('Config set!')
 
-print('Training model...')
+print('\nTraining model...')
 production_model = regressor.Regressor(config = production_config)
 production_model.train(production_df)
 print('Model trained!')
 
-print('Generating preductions for all games...')
+print('\nGenerating preductions for all games...')
 match_preds_dict = production_model.generate_match_preds()
 
 # NEED TO TURN TO FINAL OUTPUT FOTMAT
