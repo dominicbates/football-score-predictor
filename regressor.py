@@ -78,6 +78,7 @@ class PoissonRegressor:
             m_a = (df['match_id'] == m_id) & (df['f|home'] == 0)
             
             # Match stats
+            match_preds[m_id_str]['match_id'] = m_id_str
             match_preds[m_id_str]['date'] = str(df['date'][m_h].values[0])
             match_preds[m_id_str]['home_team'] = df['team'][m_h].values[0]
             match_preds[m_id_str]['away_team'] = df['team'][m_a].values[0]
@@ -104,7 +105,7 @@ class PoissonRegressor:
             # Most likely scores
             match_preds[m_id_str]['p|scores'] = {}
             for h in match_preds[m_id_str]['p|home_goals']:
-                for a in match_preds[m_id_str]['p|home_goals']:
+                for a in match_preds[m_id_str]['p|away_goals']: # is this right? should be away_goals??
                     match_preds[m_id_str]['p|scores'][str(h)+'-'+str(a)] = (match_preds[m_id_str]['p|home_goals'][h] *
                                                                             match_preds[m_id_str]['p|away_goals'][a])
             # Only keep top N
@@ -118,9 +119,31 @@ class PoissonRegressor:
         return match_preds
     
     
-   
-
     
+    
+    
+def match_preds_to_df(match_preds):
+    
+    # Columns to extract
+    columns = ['match_id','date','home_team','away_team',
+               'played','actual|home_goals','actual|away_goals',
+               'p|home_win','p|draw','p|away_win']
+    
+    # Create blank lists
+    final_dict = {}
+    for c in columns:
+        final_dict[c] = []
+        
+    # Add each game
+    for match in match_preds:
+        for c in columns:
+            final_dict[c].append(match[c])
+            
+    # Turn to dataframe
+    final_df = pd.DataFrame(final_df)
+    
+    
+
 
 
 
