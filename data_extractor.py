@@ -3,6 +3,8 @@ import json
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+import datetime
+import time
 
 '''
 Example usage:
@@ -142,5 +144,31 @@ def preprocess_df(scores_df):
     return processed_df
     
 
+# UNTESTED
+def get_production_data(n_years_minus=2, n_weeks_plus=8):
+    
+    today = datetime.date.today()
+        
+    # Loop through different years and store data
+    processed_dataframes = []
+    for n in range(n_years_minus):
+        min_date =  today - datetime.timedelta(weeks = (n+1)*52)
+        max_date =  today - datetime.timedelta(weeks = n*52)
+        # Get data
+        extract = download_data('PL', min_date.strftime("%Y-%m-%d"), max_date.strftime("%Y-%m-%d"))
+        raw_df = create_df(extract)
+        processed_df = preprocess_df(raw_df)
+        processed_dataframes.append(processed_df)
+        time.sleep(5)
+        
+    # Add future games
+    max_date =  today + datetime.timedelta(weeks = n_weeks_plus)
 
+    extract = download_data('PL', today.strftime("%Y-%m-%d"), max_date.strftime("%Y-%m-%d"))
+    raw_df = create_df(extract)
+    processed_df = preprocess_df(raw_df)
+    processed_dataframes.append(processed_df)
+
+    # Combine datasets
+    production_df = pd.concat(processed_dataframes, ignore_index=True).drop_duplicates(ignore_index=True)
 
