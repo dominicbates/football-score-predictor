@@ -15,8 +15,10 @@ Contains `download_data()`, which queries the API and gets historical data as js
 
 Contains the `PoissonRegressor` class, which can be used, along with a config file, to train a Poisson GLM, predict expected goals, and also calculate a pdf of goals
 
-### 3. regressor.py
+
+### 3. production_run.py
 Runs a series of steps in order to extract production data, fit a model, and output a final dataframe for use in dashboard/web app
+
 
 ### To Do:
 
