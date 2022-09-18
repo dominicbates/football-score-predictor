@@ -159,7 +159,7 @@ def get_production_data(n_years_minus=2, n_weeks_plus=8):
         raw_df = create_df(extract)
         processed_df = preprocess_df(raw_df)
         processed_dataframes.append(processed_df)
-        time.sleep(5)
+        time.sleep(5) # Just incase
         
     # Add future games
     max_date =  today + datetime.timedelta(weeks = n_weeks_plus)
@@ -172,3 +172,4 @@ def get_production_data(n_years_minus=2, n_weeks_plus=8):
     # Combine datasets
     production_df = pd.concat(processed_dataframes, ignore_index=True).drop_duplicates(ignore_index=True)
 
+    return production_df
