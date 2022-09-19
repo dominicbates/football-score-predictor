@@ -2,6 +2,7 @@
 
 This is a tool I am building for predicting football scores. 
 
+
 Data is extracted from the very useful football API https://www.football-data.org/
 
 I am using a very simple Poisson GLM to model football scores (with inputs of team1, team2, home/away)
