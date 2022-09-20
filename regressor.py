@@ -150,7 +150,7 @@ def match_preds_to_df(match_preds, n_scores_keep=10):
         for c in columns:
             final_dict[c].append(match_preds[match][c])
 
-    # Add top score score probabilities
+        # Add top score score probabilities
         top_scores = match_preds[match]['p|scores']
         for n in range(n_scores_keep):
             final_dict['p|score_'+str(n+1)+'|score'].append(list(top_scores)[n])

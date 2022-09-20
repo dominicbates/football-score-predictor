@@ -26,6 +26,9 @@ for m in match_preds_dict:
     break
 match_preds_df = regressor.match_preds_to_df(match_preds_dict)
 print(match_preds_df.head())
-match_preds_df.to_csv('test_football_output.csv')
+# match_preds_df.to_csv('test_football_output.csv')
+match_preds_df[['date', 'home_team','away_team','played','p|home_win','p|draw','p|away_win']].to_csv('test_football_betting_output.csv')
+
 # NEED TO TURN TO FINAL OUTPUT FOTMAT
-print('Generating preductions for all games...')
+print('Generated and saved!')
+print('\n\nUse output to calculate ratio (i.e. expected winning fraction on bet, >1 is good)\nCalculate like: "ratio = true_probability*(1+odds)"')
