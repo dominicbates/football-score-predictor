@@ -22,7 +22,8 @@ class PoissonRegressor:
             raise ValueError('Need to supply "fit_intercept" in config (True or False)')
             
         self.features = config['features']
-        self.target = config['target']    
+        self.target = config['target']  
+        self.weight_col = config['weight_col']  
         self.fit_intercept = config['fit_intercept']
 
         self.model = linear_model.PoissonRegressor(alpha=0, fit_intercept=self.fit_intercept)
@@ -31,9 +32,16 @@ class PoissonRegressor:
         self.model_intercept = None
         self.model_fit = False
     
-    def train(self, df):
+    def train(self, df, recency_weight = 0):
+        '''
+        Train a model. Recency weight of 0 means all points treated equally, 1 means
+        linearly decrease impact with time, 1+ means favour recent games
+        '''
         df = df[df['f|played'] == 1]
-        self.model.fit(df[self.features], df[self.target])
+        if self.weight_col is None:
+            self.model.fit(df[self.features], df[self.target])
+        else:
+            self.model.fit(df[self.features], df[self.target], sample_weight=df[self.weight_col]**recency_weight)
         self.model_params = dict(zip(self.features,self.model.coef_))
         self.model_intercept = self.model.intercept_
         self.model_fit = True
@@ -122,25 +130,36 @@ class PoissonRegressor:
     
     
     
-def match_preds_to_df(match_preds):
+def match_preds_to_df(match_preds, n_scores_keep=10):
     
     # Columns to extract
     columns = ['match_id','date','home_team','away_team',
                'played','actual|home_goals','actual|away_goals',
                'p|home_win','p|draw','p|away_win']
+
+
+    new_columns = ['p|score_'+str(n+1)+'|score' for n in range(n_scores_keep)] + \
+                  ['p|score_'+str(n+1)+'|prob' for n in range(n_scores_keep)]
     
     # Create blank lists
     final_dict = {}
-    for c in columns:
+    for c in columns+new_columns:
         final_dict[c] = []
         
     # Add each game
     for match in match_preds:
         for c in columns:
-            final_dict[c].append(match[c])
-            
+            final_dict[c].append(match_preds[match][c])
+
+    # Add top score score probabilities
+        top_scores = match_preds[match]['p|scores']
+        for n in range(n_scores_keep):
+            final_dict['p|score_'+str(n+1)+'|score'].append(list(top_scores)[n])
+            final_dict['p|score_'+str(n+1)+'|prob'].append(top_scores[list(top_scores)[n]])
+
     # Turn to dataframe
-    final_df = pd.DataFrame(final_df)
+    final_df = pd.DataFrame(final_dict)
+    return final_df
     
     
 
