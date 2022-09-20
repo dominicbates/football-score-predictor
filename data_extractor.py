@@ -142,8 +142,6 @@ def preprocess_df(scores_df):
     processed_df['p|goals|scored'] = scores_df['goals_scored']
     processed_df['p|goals|conceded'] = scores_df['goals_conceded']
     
-    processed_df['f|played'] = scores_df['played']
-
     return processed_df
     
 
@@ -155,14 +153,17 @@ def add_recency_weight(processed_df):
     processed_df['f|recency_weight'] = 0
 
     m_played = processed_df['played'] == 1
-    processed_df.loc[m_played, 'f|recency_weight'] = np.linspace(0,1,m_played.sum())
+    processed_df.loc[m_played,'f|recency_weight'] = np.linspace(0,1,m_played.sum())
 
     return processed_df
 
-# UNTESTED
-def get_production_data(n_years_minus=2, n_weeks_plus=8):
+
+def get_production_data(n_years_minus=2, n_weeks_plus=8, force_current_date=None):
     
-    today = datetime.date.today()
+    if force_current_date is None:
+        today = datetime.date.today()
+    else:
+        today = force_current_date
         
     # Loop through different years and store data
     processed_dataframes = []
@@ -188,6 +189,14 @@ def get_production_data(n_years_minus=2, n_weeks_plus=8):
     production_df = pd.concat(processed_dataframes, ignore_index=True).drop_duplicates(ignore_index=True)
     # Incase different columns?
     production_df = production_df.fillna(0)
+
+    # Fake the played feature if required (set to -1)
+    # if force_current_date is None:
+    #     None
+    # else:
+    m_fake_unplayed = processed_df['played'] & (processed_df['date'] > today)
+    processed_df.loc[m_fake_unplayed,'played'] = -1
+
     production_df = add_recency_weight(production_df)
 
     return production_df
