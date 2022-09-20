@@ -105,8 +105,10 @@ def create_df(response):
     df = pd.DataFrame()
     for r in response['matches']:
         samples = split_games(extract_from_json(r))
-        df = df.append(samples[0], ignore_index = True) # A bit inefficient but it's all good
-        df = df.append(samples[1], ignore_index = True)
+        # df = df.append(samples[0], ignore_index = True) # A bit inefficient but it's all good
+        # df = df.append(samples[1], ignore_index = True)
+        df = pd.concat([df, pd.DataFrame(samples[0], index=[0])], ignore_index=True) # A bit inefficient but it's all good
+        df = pd.concat([df, pd.DataFrame(samples[1], index=[0])], ignore_index=True)
     df['date'] = pd.to_datetime(df['date'])
     return df
 
@@ -128,6 +130,7 @@ def preprocess_df(scores_df):
     for t in teams:
         m_team = (scores_df['team'] == t)
         processed_df['f|team|'+t] = m_team.astype(int)
+
     # Opponent features
     for t in teams:
         m_opp = (scores_df['opponent'] == t)
@@ -143,6 +146,18 @@ def preprocess_df(scores_df):
 
     return processed_df
     
+
+
+def add_recency_weight(processed_df):
+
+    # Weight for recent games (goes from 0 in oldest game to 1 in most recent game)
+    processed_df = processed_df.sort_values(by=['date'], ascending=True, ignore_index=True)
+    processed_df['f|recency_weight'] = 0
+
+    m_played = processed_df['played'] == 1
+    processed_df.loc[m_played, 'f|recency_weight'] = np.linspace(0,1,m_played.sum())
+
+    return processed_df
 
 # UNTESTED
 def get_production_data(n_years_minus=2, n_weeks_plus=8):
@@ -171,5 +186,8 @@ def get_production_data(n_years_minus=2, n_weeks_plus=8):
 
     # Combine datasets
     production_df = pd.concat(processed_dataframes, ignore_index=True).drop_duplicates(ignore_index=True)
+    # Incase different columns?
+    production_df = production_df.fillna(0)
+    production_df = add_recency_weight(production_df)
 
     return production_df
