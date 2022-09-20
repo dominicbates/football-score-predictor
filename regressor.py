@@ -10,17 +10,16 @@ class PoissonRegressor:
         self.min_date = None
         self.max_date = None
         self.fit_intercept = True
-        #if 'min_date' in list(config):
-        #    self.min_date = config['min_date']
-        #if 'max_date' in list(config):
-        #    self.max_date = config['max_date']
+
         if 'features' not in list(config):
-            raise ValueError('Need to supply list of features in config "features"')
+            raise ValueError('Need to supply list of features in config (list of column names)')
         if 'target' not in list(config):
-            raise ValueError('Need to supply target in config "target"')
+            raise ValueError('Need to supply "target" in config (column name of target variable)')
+        if 'weight_col' not in list(config):
+            raise ValueError('Need to supply "weight_col" in config (column name of weight feature)')
         if 'fit_intercept' not in list(config):
             raise ValueError('Need to supply "fit_intercept" in config (True or False)')
-            
+
         self.features = config['features']
         self.target = config['target']  
         self.weight_col = config['weight_col']  
