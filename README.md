@@ -33,7 +33,7 @@ Contains some info and plots about hyperparameter tuning in this model. Final pr
 
 
 1. Can we make pdf calculation exact, rather than a random sample?
-2. Investigate covariance between two teams scores
+2. Investigate covariance between home and away goal distributions
 3. Create bayesian model + encorporate posteriors in to goals pdf
 4. Find and append other data to model (e.g. injury / change in manager info)
 5. Better account for promoted team predictions when no data exists
