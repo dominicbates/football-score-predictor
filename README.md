@@ -20,7 +20,7 @@ Contains the `PoissonRegressor` class, which can be used, along with a config fi
 
 ### 3. odds.py
 
-Contains the function `append_odds_to_df` which gets odds from 888 sport, joins this to a model output dataframe, and also calculates whether odds are under/overvalued
+Contains the function `append_odds_to_df()` which gets odds from 888 sport, joins this to a model output dataframe, and also calculates whether odds are under/overvalued
 
 ### 4. production_run.py
 Runs all steps with production hyper-parameters in order to extract production data, fit a model, and output a final dataframe for use in dashboard/web app
