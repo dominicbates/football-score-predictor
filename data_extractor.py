@@ -43,8 +43,21 @@ def download_data(league_name, date_min, date_max):
     
     # Create query
     query='/v2/competitions/{}/matches?dateFrom={}&dateTo={}'.format(league_ids[league_name], date_min, date_max) 
-    
-    return get_query(query)
+    # SHOULD CHANGE TO V4 AT SOME POINT
+
+
+    # Get response and check if it worked
+    response_extracted = False
+    while response_extracted==False:
+        response = get_query(query)
+        if 'message' in list(response):
+            print('Found error message in repsonse, trying again in 30 sec')
+            print(response['message'])
+            time.sleep(30)
+        else:
+            response_extracted=True
+
+    return response
         
             
 
@@ -102,14 +115,17 @@ def split_games(match):
     
 # Loop through data and turn to dataframe
 def create_df(response):
+    # print(response)
     df = pd.DataFrame()
-    for r in response['matches']:
-        samples = split_games(extract_from_json(r))
-        # df = df.append(samples[0], ignore_index = True) # A bit inefficient but it's all good
-        # df = df.append(samples[1], ignore_index = True)
-        df = pd.concat([df, pd.DataFrame(samples[0], index=[0])], ignore_index=True) # A bit inefficient but it's all good
-        df = pd.concat([df, pd.DataFrame(samples[1], index=[0])], ignore_index=True)
-    df['date'] = pd.to_datetime(df['date'])
+
+    if response['count'] > 0:
+        for r in response['matches']:
+            samples = split_games(extract_from_json(r))
+            # df = df.append(samples[0], ignore_index = True) # A bit inefficient but it's all good
+            # df = df.append(samples[1], ignore_index = True)
+            df = pd.concat([df, pd.DataFrame(samples[0], index=[0])], ignore_index=True) # A bit inefficient but it's all good
+            df = pd.concat([df, pd.DataFrame(samples[1], index=[0])], ignore_index=True)
+        df['date'] = pd.to_datetime(df['date'])
     return df
 
 
@@ -118,7 +134,7 @@ def preprocess_df(scores_df):
     
     # Blank dataframe
     processed_df = pd.DataFrame()
-    processed_df['date'] = scores_df['date']
+    processed_df['date'] = pd.to_datetime(scores_df['date']) # Convert from str to datetime
     processed_df['match_id'] = scores_df['match_id']
     processed_df['team'] = scores_df['team']
     processed_df['opponent'] = scores_df['opponent']	
@@ -158,45 +174,79 @@ def add_recency_weight(processed_df):
     return processed_df
 
 
-def get_production_data(n_years_minus=2, n_weeks_plus=8, force_current_date=None):
+# def get_production_data(n_years_minus=2, n_weeks_plus=8, force_current_date=None):
+    
+#     if force_current_date is None:
+#         today = datetime.date.today()
+#     else:
+#         today = force_current_date
+        
+#     # Loop through different years and store data
+#     processed_dataframes = []
+#     for n in range(n_years_minus):
+#         min_date =  today - datetime.timedelta(weeks = (n+1)*52)
+#         max_date =  today - datetime.timedelta(weeks = n*52)
+#         # Get data
+#         extract = download_data('PL', min_date.strftime("%Y-%m-%d"), max_date.strftime("%Y-%m-%d"))
+#         # print(extract)
+#         if extract['count'] > 0:
+#             raw_df = create_df(extract)
+#             processed_df = preprocess_df(raw_df)
+#             processed_dataframes.append(processed_df)
+#             time.sleep(5) # Just incase
+        
+#     # Add future games
+#     max_date =  today + datetime.timedelta(weeks = n_weeks_plus)
+
+#     extract = download_data('PL', today.strftime("%Y-%m-%d"), max_date.strftime("%Y-%m-%d"))
+#     if extract['count'] > 0:
+#         raw_df = create_df(extract)
+#         processed_df = preprocess_df(raw_df)
+#         processed_dataframes.append(processed_df)
+
+#     # Combine datasets
+#     production_df = pd.concat(processed_dataframes, ignore_index=True).drop_duplicates(ignore_index=True)
+#     # Incase different columns?
+#     production_df = production_df.fillna(0)
+
+#     # Fake the played feature if required (set to -1)
+#     # if force_current_date is None:
+#     #     None
+#     # else:
+#     m_fake_unplayed = (production_df['played'] == 1) & (production_df['date'].dt.date > today)
+#     production_df.loc[m_fake_unplayed,'played'] = -1
+#     production_df = add_recency_weight(production_df)
+
+#     return production_df
+
+
+def get_production_data(n_weeks_minus=52, n_weeks_plus=8, force_current_date=None):
     
     if force_current_date is None:
         today = datetime.date.today()
     else:
         today = force_current_date
         
-    # Loop through different years and store data
-    processed_dataframes = []
-    for n in range(n_years_minus):
-        min_date =  today - datetime.timedelta(weeks = (n+1)*52)
-        max_date =  today - datetime.timedelta(weeks = n*52)
-        # Get data
-        extract = download_data('PL', min_date.strftime("%Y-%m-%d"), max_date.strftime("%Y-%m-%d"))
-        raw_df = create_df(extract)
-        processed_df = preprocess_df(raw_df)
-        processed_dataframes.append(processed_df)
-        time.sleep(5) # Just incase
-        
-    # Add future games
+    # Get dates for query
+    min_date =  today - datetime.timedelta(weeks = n_weeks_minus)
     max_date =  today + datetime.timedelta(weeks = n_weeks_plus)
 
-    extract = download_data('PL', today.strftime("%Y-%m-%d"), max_date.strftime("%Y-%m-%d"))
-    raw_df = create_df(extract)
-    processed_df = preprocess_df(raw_df)
-    processed_dataframes.append(processed_df)
-
-    # Combine datasets
-    production_df = pd.concat(processed_dataframes, ignore_index=True).drop_duplicates(ignore_index=True)
-    # Incase different columns?
+    # Get data
+    extract = download_data('PL', min_date.strftime("%Y-%m-%d"), max_date.strftime("%Y-%m-%d"))
+    # print(extract)
+    if extract['count'] > 0:
+        raw_df = create_df(extract)
+        production_df = preprocess_df(raw_df)
+        time.sleep(1) # Just incase
+    else:
+        print('NO RESULTS FOUND!!!')
+ 
+     # Incase 
     production_df = production_df.fillna(0)
 
     # Fake the played feature if required (set to -1)
-    # if force_current_date is None:
-    #     None
-    # else:
-    m_fake_unplayed = processed_df['played'] & (processed_df['date'] > today)
-    processed_df.loc[m_fake_unplayed,'played'] = -1
-
+    m_fake_unplayed = (production_df['played'] == 1) & (production_df['date'].dt.date > today)
+    production_df.loc[m_fake_unplayed,'played'] = -1
     production_df = add_recency_weight(production_df)
 
     return production_df
