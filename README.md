@@ -2,7 +2,7 @@
 
 This is a tool I am building for predicting football scores. 
 
-Data is extracted from the very useful football API https://www.football-data.org/ I am currently only extracting premier league games, but other leagues could easily be fit only a few small changes to the query, and odds scipts.
+Data is extracted from the very useful football API https://www.football-data.org/ I am currently only extracting premier league games, but other leagues could easily be fit only a few small changes to the extraction query, and odds scipts.
 
 I am using a very simple Poisson GLM to model football scores (with inputs of team1, team2, home/away), with hyperparameters describing how to weight recent vs historical games in the fit
 
