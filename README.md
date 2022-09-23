@@ -32,7 +32,7 @@ Contains some info and plots about hyperparameter tuning in this model. Final pr
 ### Possible to do list:
 
 
-1. Can we make pdf calculation exsct, rather than a random sample?
+1. Can we make pdf calculation exact, rather than a random sample?
 2. Investigate covariance between two teams scores
 3. Create bayesian model + encorporate posteriors in to goals pdf
 4. Find and append other data to model (e.g. injury / change in manager info)
