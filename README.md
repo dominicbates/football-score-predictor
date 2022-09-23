@@ -24,7 +24,7 @@ Contains the function `append_odds_to_df()` which gets odds from 888 sport, join
 ### 4: production_run.py
 Runs all steps with production hyper-parameters in order to extract production data, fit a model, and output a final dataframe for use in dashboard/web app
 
-### App: hyperparameter-tuning
+### `hyperparameter-tuning/`
 
 Contains some info and plots about hyperparameter tuning in this model. Final production hyperparameters fit the model over fairly short timescales, but we fix the impact of home/away (which was fit over an entire year). This seems to give the best performance after applying the process to many historical dates and assessing how well the model predicts results of the next 2 weeks worth of games
 
