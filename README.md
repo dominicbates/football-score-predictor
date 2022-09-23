@@ -1,6 +1,6 @@
 # Football-score-predictor
 
-This is a tool I am building for predicting football scores. 
+This is a tool I have built for predicting football scores and win/draw/loss probabilities. 
 
 Data is extracted from the very useful football API https://www.football-data.org/ I am currently only extracting premier league games, but other leagues could easily be fit only a few small changes to the extraction query, and odds scipts.
 
