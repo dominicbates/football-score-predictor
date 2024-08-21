@@ -6,6 +6,8 @@ Data is extracted from the very useful football API https://www.football-data.or
 
 I am using a very simple Poisson GLM to model the number of goals scored by each team (with inputs of team1, team2, home/away). I also have hyperparameters describing how to weight recent vs historical games in the fit. I am computing the probability of a win/loss/draw for each game, and most likely results by sampling from these two Poisson distributions.
 
+Model has been used to successfully make money from betting sites, however I would advise applying at your own risk, given the uncertainty and biases around this kind of modelling. 
+
 ### 1: data_extractor.py
 
 Contains `download_data()`, which queries the API and gets historical data as json. Also contains `create_df()` and `preprocess_df()` for  processing the raw json and then creating a dataframe ready for trianing. 
