@@ -12,7 +12,7 @@ Model has been used to successfully make money from betting sites, however I wou
 
 Contains `download_data()`, which queries the API and gets historical data as json. Also contains `create_df()` and `preprocess_df()` for  processing the raw json and then creating a dataframe ready for trianing. 
 
-`get_production_data()` performs all steps and extracts production data as dataframe
+`get_production_data()` performs all steps and extracts production data as dataframe. Optionally a prior can be added on prompted teams using `apply_prompted_prior()` to this output, editing the dataframe to force a prior which assumes similar performance to last years promoted teams.
 
 
 ### 2: regressor.py
@@ -32,10 +32,12 @@ Contains some info and plots about hyperparameter tuning in this model. Final pr
 
 ### Possible to do list:
 
-1. Sperate model/process to calculate: For player X in team Y, what fraction of Ys goals go through them (then can multiply this by team stats to get player stats?)
-2. Can we make pdf calculation exact, rather than a random sample?
-3. Investigate covariance between home and away goal distributions
-4. Create bayesian model + encorporate posteriors in to goals pdf
-5. Find and append other data to model (e.g. injury / change in manager info)
-6. Better account for promoted team predictions when no data exists
-7. Productionise in GCP and output to dashboard (E2 micro?)
+1. Productionise in streamlit?
+2. Sperate model/process to calculate: For player X in team Y, what fraction of Ys goals go through them (then can multiply this by team stats to get player stats?)
+3. Can we make pdf calculation exact, rather than a random sample?
+4. Investigate covariance between home and away goal distributions
+5. Create bayesian model + encorporate posteriors in to goals pdf
+6. Find and append other data to model (e.g. injury / change in manager info)
+7. Better account for promoted team predictions when no data exists (partially done)
+
+

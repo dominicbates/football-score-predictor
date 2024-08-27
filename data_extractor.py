@@ -28,6 +28,8 @@ def get_query(query):
 
     return json_data
 
+
+
 # Uses the following api API: https://www.football-data.org/
 def download_data(league_name, date_min, date_max):
 
@@ -250,3 +252,34 @@ def get_production_data(n_weeks_minus=52, n_weeks_plus=8, force_current_date=Non
     production_df = add_recency_weight(production_df)
 
     return production_df
+
+
+
+
+
+
+def apply_promoted_prior(df, mapping):
+    '''
+    Applies last years results to this years prompted teams 
+    given a mapping passed e.g. {'leicster':'luton'}
+
+    This acts sort of equivalently to a bayesian prior on 
+    newly prompted teams, assuming their performance will 
+    be similar to last years prompted teams. This prior will
+    then become less informative as more data becomes 
+    available as dictated by the weight curve.
+    '''
+    for col in ['team', 'opponent']:
+        for prompted in list(mapping):
+            # To edit
+            m_edit = (df[col]==mapping[prompted])
+            # Change team names
+            df.loc[m_edit, col] = prompted
+            # Change one hot encoded features (remove for old team, add for new)
+            if col == 'team':
+                df.loc[m_edit, 'f|team|'+prompted] = 1
+                df.loc[m_edit, 'f|team|'+mapping[prompted]] = 0
+            elif col == 'opponent':
+                df.loc[m_edit, 'f|opp|'+prompted] = 1
+                df.loc[m_edit, 'f|opp|'+mapping[prompted]] = 0
+    return df
