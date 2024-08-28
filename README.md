@@ -33,11 +33,12 @@ Contains some info and plots about hyperparameter tuning in this model. Final pr
 ### Possible to do list:
 
 1. Productionise in streamlit?
-2. Sperate model/process to calculate: For player X in team Y, what fraction of Ys goals go through them (then can multiply this by team stats to get player stats?)
-3. Can we make pdf calculation exact, rather than a random sample?
-4. Investigate covariance between home and away goal distributions
-5. Create bayesian model + encorporate posteriors in to goals pdf
-6. Find and append other data to model (e.g. injury / change in manager info)
-7. Better account for promoted team predictions when no data exists (partially done)
+2. Measure covariance between the goals of both teams to see if distributions are uncorrelated. If there is a significant correlation, we can then account for this in our monte carlo sampling process
+3. Get this working for several leagues  and streamline code to computer for all on one step (seperate models).
+4. Could build a seperate model or process to calculate: For player X in team Y, what fraction of Ys goals go through them (then can multiply this by team stats to get player goal probabilities)
+5. Can we make pdf calculation exact, rather than a random sample. 
+6. Create bayesian model + encorporate posteriors in to goals pdf
+7. Find and append other data to model (e.g. injury / change in manager info)
+8. Better account for promoted team predictions when no data exists (partially done)
 
 
