@@ -12,7 +12,7 @@ The hypothesis underlying this model is that goal scoring is an inherrently Pois
 
 ### Model structure
 
-Compared to some previous approaches, we *don't* manually create features for recent form, but rather we create features representing each attacking and defending team, and model form as part of the fitting process. In Poisson linear regression, the expected number of goals, $G$, in a game can be modelled as:
+Compared to some previous approaches, we *don't* manually create features for recent form, but rather we create binary features representing each attacking and defending team, and model form as part of the fitting process. In Poisson linear regression, the expected number of goals, $G$, in a game can be modelled as:
 
 $$log(G) = {\bf X \beta} + \beta_{0}$$
 
