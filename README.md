@@ -2,7 +2,7 @@
 
 <img src="./images/logo.png" alt="Alt text" width="200" style="display: block; margin: 0 auto;">
 
-This repository contains a code to model win/draw/loss probabilities across most major football leagues (premier league & championship in the UK, along with the top league across germany, france, brazil, spain, netherlands, and portugal). The model applies [Poisson linear regression](https://en.wikipedia.org/wiki/Poisson_regression) to historical results, correctly weighting recent vs long term form in order to predict the outcome of future games.
+This repository contains a code to model win/draw/loss probabilities across most major football leagues (premier league & championship in the England, along with the top league across germany, france, brazil, spain, netherlands, and portugal). The model applies [Poisson linear regression](https://en.wikipedia.org/wiki/Poisson_regression) to historical results, correctly weighting recent vs long term form in order to predict the outcome of future games.
 
 There is code to automatically download future fixtures, predict win/draw/loss probabilities, and also join to 888sport odds, to work out if particular odds are over/under valued. Has been succesfully applied to make money from betting sites, however would advise applying at your own risk, given the uncertainty and biases around this kind of modelling. Documentation is currently mostly for personal use, however anyone else is welcome to clone the repo and run as desired.
 
