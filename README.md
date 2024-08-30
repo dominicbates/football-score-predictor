@@ -4,7 +4,7 @@
 
 This repository contains a code to models score probabilities across most major football leagues (premier league & championship, and top league in germany, france, brazil, spain, netherlands, and portugal). The model applies [Poisson linear regression](https://en.wikipedia.org/wiki/Poisson_regression) to historical results, correctly weighting recent vs long term form in order to predict the outcome of future games.
 
-There is code to automatically download future fixtures, predict win/draw/loss probabilities, and also join to 888sport odds, to work out if particular odds are over/under valued. Has been succesfully applied to make money from betting sites, however would advise applying at your own risk, given the uncertainty and biases around this kind of modelling. Documentation is currently mostly for personal use, however anyone else is welcome to clone and apply as desired.
+There is code to automatically download future fixtures, predict win/draw/loss probabilities, and also join to 888sport odds, to work out if particular odds are over/under valued. Has been succesfully applied to make money from betting sites, however would advise applying at your own risk, given the uncertainty and biases around this kind of modelling. Documentation is currently mostly for personal use, however anyone else is welcome to clone the repo and run as desired.
 
 ## 1. The Model
 
@@ -25,11 +25,7 @@ We fit models over all many different values of $r$ and $w$ for ~5 years worth o
 
 ## 2. The Code
 
-Data is extracted from the very useful football API https://www.football-data.org/ This gives access to 8 of the most popular league's data for free, with lower leagues requiring paid access.
-
-I am using a very simple Poisson GLM to model the number of goals scored by each team (with inputs of team1, team2, home/away). I also have hyperparameters describing how to weight recent vs historical games in the fit. I am computing the probability of a win/loss/draw for each game, and most likely results by sampling from these two Poisson distributions.
-
-Model has been used to successfully make money from betting sites, however I would advise applying at your own risk, given the uncertainty and biases around this kind of modelling. 
+Code is split in to a few different scripts, representing the different distinct steps in downloading data, modelling, and calculating odds. A production run script has been also added, which does all steps needed for running the code in production. Some file paths may need to be edited if running on your own machine, as code has not been fully productionised, however this should be limited to edting a couple of lines in `production_run.py`.
 
 ### data_extractor.py
 
