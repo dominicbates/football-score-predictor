@@ -2,13 +2,15 @@
 
 <img src="./images/logo.png" alt="Alt text" width="200" style="display: block; margin: 0 auto;">
 
-This repository contains a code to model win/draw/loss probabilities across most major football leagues (premier league & championship in England, along with the 1st league in germany, france, brazil, spain, netherlands, and portugal). The model applies [Poisson linear regression](https://en.wikipedia.org/wiki/Poisson_regression) to historical results, accounting for importance of recent vs long term form in order to predict the outcome of future games.
+This repository contains code to model win/draw/loss probabilities across most major football leagues (premier league & championship in England, along with the 1st league in germany, france, brazil, spain, netherlands, and portugal). The model applies [Poisson linear regression](https://en.wikipedia.org/wiki/Poisson_regression) to historical results, accounting for importance of recent vs long term form in order to predict the outcome of future games.
 
 There is code to automatically download future fixtures, predict win/draw/loss probabilities, and also join to 888sport odds, to work out if particular odds are over/under valued. Has been succesfully applied to make money from betting sites, however would advise applying at your own risk, given the uncertainty and biases around this kind of modelling. Documentation is currently mostly for personal use, however anyone else is welcome to clone the repo and run as desired.
 
 ## 1. The Model
 
 The hypothesis underlying this model is that goal scoring is an inherrently Poisson process, e.g. similar to number of raindrops falling on a particular area of ground, or number of cars passing on a quiet road. Specifically, we assume that the number of team goals scored in a football game is drawn from a Poisson distribution, with a mean dictated by the ability of the two teams (and possibly some other features). This assumption has been subsequently tested here, where we find that the distribution of goals for a particular predicted mean ***perfectly matches a Poission distribution*** (at least within the limits of our dataset size).
+
+### Model structure
 
 Compared to some previous approaches, we *don't* manually create features for recent form, but rather we create features representing each attacking and defending team, and model form as part of the fitting process. In Poisson linear regression, the expected number of goals, $G$, in a game can be modelled as:
 
@@ -18,9 +20,11 @@ where $X$ represents our model features, and $\beta$ the weight assigned to each
 
 Given this model, we can fit to historical results, such that the fitted $\beta_{i}$ now contains the attacking strength and defensive strength of each team in the dataset. To predict the likely results of a future game, we can then set the correct binary features for attacking and defensive teams and read the distribuition mean (doing this twice to get each teams goals). Given these two different Poisson distributions, we can simulate many games to work out the fraction that are won/drawn/lost.
 
-To make sure we are not averaging over outdated results, which may not now be representative (e.g. if a team has improved recently, signed new players, has injuries etc.), we specifically model the importance of recent vs historical results as part of the fitting process. To do this we define a range, $r$, to fit over e.g. (only fit over the last 10 games), and also define a weight, $w$ which is applied to a linearly increasing array the same length as the number of games included (e.g. `[0.1,0.2,...,0.9,1.0] ^ w`, where 0.1 corresponds to the 10th most recent game). This array is raised to the power, $w$, such that for a vanishingly _small_ weight ($w=0$), all games are treated equally, and for a very  _large_ one ($w>>1$), only the most recent game is weighted in the fit. 
+### Recency weighting
 
-We fit models over all many different values of $r$ and $w$ for ~5 years worth of premier league data to see which produces the most accurate game predictions (some plots of this process are shown [here](https://github.com/dominicbates/football-score-predictor/tree/master/hyperparameter-tuning)). We find that setting $r$ to the most recent 1 year's games, and $w=4$ (heavily weighting recent games) produces the most accuract model, and hence best represents current form. 
+To make sure we are not fitting over historical results that might not now be representative of the current team (e.g. if a team has improved recently, signed new players, has injuries etc.), we specifically model the importance of recent vs historical results as part of the fitting process. To do this we define a range, $r$, to fit over e.g. (only fit over the last 10 games), and also define a weighting scheme, dictated by $w$ which is applied to a linearly increasing array the same length as $r$ (e.g. `weight = [0.1,0.2,...,0.9,1.0] ^ w`, where the 0.1 here corresponds to the 10th most recent game). This array is raised to the power, $w$, such that for a vanishingly _small_ weight ($w=0$), all games are treated equally, and for a very  _large_ one ($w>>1$), only the most recent game is weighted in the fit. 
+
+We then fit models (applying these weights to data points) over all different values of $r$ and $w$ for ~5 years worth of premier league data to see which combination produces the most accurate game predictions (some plots of this process are shown [here](https://github.com/dominicbates/football-score-predictor/tree/master/hyperparameter-tuning)). We find that setting $r$ to the most recent 1 year's games, and $w=4$ (heavily weighting recent games) produces the most accuract model, and hence best represents current form. 
 
 
 ## 2. The Code
