@@ -1,10 +1,10 @@
-# Football-score-predictor
+# football-score-predictor
+
+<img src="./images/logo.png" alt="Alt text" width="200" style="display: block; margin: 0 auto;">
 
 This repository contains a code to models score probabilities across most major football leagues (premier league & championship, and top league in germany, france, brazil, spain, netherlands, and portugal). The model applies [Poisson linear regression](https://en.wikipedia.org/wiki/Poisson_regression) to historical results, correctly weighting recent vs long term form in order to predict the outcome of future games.
 
 There is code to automatically download future fixtures, predict win/draw/loss probabilities, and also join to 888sport odds, to work out if particular odds are over/under valued. Has been succesfully applied to make money from betting sites, however would advise applying at your own risk, given the uncertainty and biases around this kind of modelling. Documentation is currently mostly for personal use, however anyone else is welcome to clone and apply as desired.
-
-
 
 ## 1. The Model
 
@@ -23,7 +23,7 @@ To make sure we are not averaging over outdated results, which may not now be re
 We fit models over all many different values of $r$ and $w$ for ~5 years worth of premier league data to see which produces the most accurate game predictions (some plots of this process are shown [here](https://github.com/dominicbates/football-score-predictor/tree/master/hyperparameter-tuning)). We find that setting $r$ to the most recent 1 year's games, and $w=4$ (heavily weighting recent games) produces the most accuract model, and hence best represents current form. 
 
 
-## 2. Code
+## 2. The Code
 
 Data is extracted from the very useful football API https://www.football-data.org/ This gives access to 8 of the most popular league's data for free, with lower leagues requiring paid access.
 
@@ -53,7 +53,7 @@ Runs all steps with production hyper-parameters in order to extract production d
 
 Contains some info and plots about hyperparameter tuning in this model. Final production hyperparameters fit the model over fairly short timescales, but we fix the impact of home/away (which was fit over an entire year). This seems to give the best performance after applying the process to many historical dates and assessing how well the model predicts results of the next 2 weeks worth of games
 
-### To do list:
+## 3. To do list:
 
 1. Fix team name matching across non-english leagues.
 2. Productionise in streamlit?
