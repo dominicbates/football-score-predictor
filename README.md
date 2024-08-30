@@ -6,7 +6,7 @@ There is code to automatically download future fixtures, predict win/draw/loss p
 
 
 
-## The Model
+## 1. The Model
 
 The hypothesis underlying this model is that goal scoring is an inherrently Poisson process, e.g. similar to number of raindrops falling on a particular area of ground, or number of cars passing on a quiet road. Specifically, we assume that the number of team goals scored in a football game is drawn from a Poisson distribution, with a mean dictated by the ability of the two teams (and possibly some other features). This assumption has been subsequently tested here, where we find that the distribution of goals for a particular predicted mean ***perfectly matches a Poission distribution*** (at least within the limits of our dataset size).
 
@@ -23,7 +23,7 @@ To make sure we are not averaging over outdated results, which may not now be re
 We fit models over all many different values of $r$ and $w$ for ~5 years worth of premier league data to see which produces the most accurate game predictions (some plots of this process are shown [here](https://github.com/dominicbates/football-score-predictor/tree/master/hyperparameter-tuning)). We find that setting $r$ to the most recent 1 year's games, and $w=4$ (heavily weighting recent games) produces the most accuract model, and hence best represents current form. 
 
 
-## Code
+## 2. Code
 
 Data is extracted from the very useful football API https://www.football-data.org/ This gives access to 8 of the most popular league's data for free, with lower leagues requiring paid access.
 
@@ -31,37 +31,38 @@ I am using a very simple Poisson GLM to model the number of goals scored by each
 
 Model has been used to successfully make money from betting sites, however I would advise applying at your own risk, given the uncertainty and biases around this kind of modelling. 
 
-### 1: data_extractor.py
+### data_extractor.py
 
 Contains `download_data()`, which queries the API and gets historical data as json. Also contains `create_df()` and `preprocess_df()` for  processing the raw json and then creating a dataframe ready for trianing. 
 
-`get_production_data()` performs all steps and extracts production data as dataframe. Optionally a prior can be added on prompted teams using `apply_prompted_prior()` to this output, editing the dataframe to force a prior which assumes similar performance to last years promoted teams.
+`get_production_data()` performs all steps and extracts production data as dataframe. Optionally a prior can be added on prompted teams using `apply_prompted_prior()` to this output, editing the dataframe to force a prior which assumes similar performance to last years promoted teams (e.g. assume Leicster perform similarly to Burnley and gradually correct this as new data appears).
 
 
-### 2: regressor.py
+### regressor.py
 
 Contains the `PoissonRegressor` class, which can be used, along with a config file, to train a Poisson GLM, predict expected goals, and also calculate a pdf of goals. Also contains the function `match_preds_to_df()` which turns the dictionary output in to a dataframe
 
-### 3: odds.py
+### odds.py
 
-Contains the function `append_odds_to_df()` which gets odds from 888 sport, joins this to a model output dataframe, and also calculates whether odds are under/overvalued
+Contains the function `append_odds_to_df()` which gets odds from 888 sport for a particular league, joins this to a model output dataframe, and also calculates whether odds are under/overvalued based on the computed win/draw/loss probabilities. Matching works fine for premier league and championship, however currently some problems with some team names not matching across other leagues (needs some manual adjustment - likely to do with non-latin characters).
 
-### 4: production_run.py
-Runs all steps with production hyper-parameters in order to extract production data, fit a model, and output a final dataframe for use in dashboard/web app
+### production_run.py
+Runs all steps with production hyper-parameters in order to extract production data, fit a model, and output a final dataframe with model predictions for upcoming games along with undervalued odds. Currently creates a seperate csv for each league.
 
-### `hyperparameter-tuning/`
+### hyperparameter-tuning/
 
 Contains some info and plots about hyperparameter tuning in this model. Final production hyperparameters fit the model over fairly short timescales, but we fix the impact of home/away (which was fit over an entire year). This seems to give the best performance after applying the process to many historical dates and assessing how well the model predicts results of the next 2 weeks worth of games
 
-### Possible to do list:
+### To do list:
 
-1. Productionise in streamlit?
-2. Measure covariance between the goals of both teams to see if distributions are uncorrelated. If there is a significant correlation, we can then account for this in our monte carlo sampling process
-3. Get this working for several leagues  and streamline code to computer for all on one step (seperate models).
-4. Could build a seperate model or process to calculate: For player X in team Y, what fraction of Ys goals go through them (then can multiply this by team stats to get player goal probabilities)
-5. Can we make pdf calculation exact, rather than a random sample. 
-6. Create bayesian model + encorporate posteriors in to goals pdf
-7. Find and append other data to model (e.g. injury / change in manager info)
-8. Better account for promoted team predictions when no data exists (partially done)
+1. Fix team name matching across non-english leagues.
+2. Productionise in streamlit?
+3. Measure covariance between the goals of both teams to see if distributions are uncorrelated. If there is a significant correlation, we can then account for this in our monte carlo sampling process
+4. Get this working for several leagues  and streamline code to computer for all on one step (seperate models).
+5. Could build a seperate model or process to calculate: For player X in team Y, what fraction of Ys goals go through them (then can multiply this by team stats to get player goal probabilities)
+6. Can we make pdf calculation exact, rather than a random sample. 
+7. Create bayesian model + encorporate posteriors in to goals pdf
+8. Find and append other data to model (e.g. injury / change in manager info)
+9. Better account for promoted team predictions when no data exists (partially done)
 
 
