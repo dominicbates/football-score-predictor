@@ -2,11 +2,11 @@ import pandas as pd
 from soccerapi.api import Api888Sport
 
 
-def get_odds():
+def get_odds(country, league):
 
 	# Extract odds
 	api = Api888Sport()
-	url = api.competitions()['England']['Premier League']
+	url = api.competitions()[country][league]
 	current_odds = api.odds(url)
 
 	# Create dict

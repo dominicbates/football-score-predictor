@@ -34,7 +34,7 @@ def get_query(query):
 def download_data(league_name, date_min, date_max):
 
     # Save some stuff
-    league_ids = {"BSA": 2013,"BL": 2002,"FL1": 2015,"PL": 2021,"ELC": 2016,
+    league_ids = {"BSA": 2013,"BL1": 2002,"FL1": 2015,"PL": 2021,"ELC": 2016,
                   "PD": 2014,"SA": 2019,"PPL": 2017,"DED": 2003,"CL": 2001}
 
     # Check input
@@ -222,7 +222,7 @@ def add_recency_weight(processed_df):
 #     return production_df
 
 
-def get_production_data(n_weeks_minus=52, n_weeks_plus=8, force_current_date=None):
+def get_production_data(league = 'PL', n_weeks_minus=52, n_weeks_plus=8, force_current_date=None):
     
     if force_current_date is None:
         today = datetime.date.today()
@@ -234,7 +234,7 @@ def get_production_data(n_weeks_minus=52, n_weeks_plus=8, force_current_date=Non
     max_date =  today + datetime.timedelta(weeks = n_weeks_plus)
 
     # Get data
-    extract = download_data('PL', min_date.strftime("%Y-%m-%d"), max_date.strftime("%Y-%m-%d"))
+    extract = download_data(league, min_date.strftime("%Y-%m-%d"), max_date.strftime("%Y-%m-%d"))
     # print(extract)
     if extract['count'] > 0:
         raw_df = create_df(extract)
