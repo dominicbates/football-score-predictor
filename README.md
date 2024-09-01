@@ -16,15 +16,21 @@ Compared to some previous approaches, we *don't* manually create features for re
 
 $$log(G) = {\bf X \beta} + \beta_{0}$$
 
-where $X$ represents our model features, and $\beta$ the weight assigned to each. Our $X$ is an array representing both the attacking team (e.g. `[0,1,0,...]`) and defensive team (e.g. `+ [1,0,0,...]`) for a particular game. We also add a single feature to model the impact of home/away. Further features could be added representing injuries, manager changes etc., however extracting clean historical data for these is very difficult, so we limit this to just teams and home/away. 
+where $X$ represents our model features, and $\beta$ the weight assigned to each. Our $X$ is a binary array representing both the attacking team (e.g. `[0,1,0,...]`) concatenated with defensive team (e.g. `[1,0,0,...]`) for a particular game. We also add a single binary feature to model the impact of home/away. Further features could be added representing injuries, manager changes etc., however extracting clean historical data for these is very difficult, so we limit this to just teams and home/away. 
 
-Given this model, we can fit to historical results, such that the fitted $\beta_{i}$ now contains the attacking strength and defensive strength of each team in the dataset. To predict the likely results of a future game, we can then set the correct binary features for attacking and defensive teams and read the distribuition mean (doing this twice to get each teams goals). Given these two different Poisson distributions, we can simulate many games to work out the fraction that are won/drawn/lost.
+Given this model, we can fit to historical results, such that the fitted $\beta$ now contains the attacking strength and defensive strength of each team in the dataset. To predict the likely results of a future game, we can then set the correct binary features for attacking and defensive teams and read the distribuition mean (doing this twice to get each teams goals). Given these two different Poisson distributions, we can simulate many games to work out the fraction that are won/drawn/lost.
 
 ### Recency weighting
 
 To make sure we are not fitting over historical results that might not now be representative of the current team (e.g. if a team has improved recently, signed new players, has injuries etc.), we specifically model the importance of recent vs historical results as part of the fitting process. To do this we define a range, $r$, to fit over (e.g. only fit over the last 10 games), and also define a weighting scheme, dictated by $w$ which is applied to a linearly increasing array the same length as $r$ (e.g. $weights = [0.1,0.2,...,0.9,1.0] ^ w$, where the 0.1 here corresponds to the 10th most recent game). This array is raised to the power, $w$, such that for a vanishingly _small_ weight ($w=0$), all games are treated equally, and for a very  _large_ one ($w>>1$), only the most recent game is weighted in the fit. 
 
 We then fit models (applying these weights to data points) over all different values of $r$ and $w$ for ~5 years worth of premier league data to see which combination produces the most accurate game predictions (some plots of this process are shown [here](https://github.com/dominicbates/football-score-predictor/tree/master/hyperparameter-tuning)). We find that setting $r$ to the most recent 1 year's games, and $w=4$ (heavily weighting recent games) produces the most accurate model, and hence best represents current form. 
+
+### Priors for newly promoted teams 
+
+At the start of the season, we will not have any recent data for promoted teams, hence predictions might be wildly in accurate for the first few weeks. To account for this, I added the option to force a "prior" on promoted teams (or relagated teams too, in the case of the championship). This prior assumes they will behave similarly in performance to previously prompted teams, and is updated as real data appears. 
+
+This is currently done by mapping results of previous seasons teams to newly promoted teams, however building a full bayesian model with true priors might be a better way of doing this in any future work. 
 
 
 ## 2. The Code
