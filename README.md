@@ -41,7 +41,7 @@ Code is split in to a few different scripts, representing the different distinct
 
 Contains `download_data()`, which queries the API and gets historical data as json. Also contains `create_df()` and `preprocess_df()` for  processing the raw json and then creating a dataframe ready for trianing. 
 
-`get_production_data()` performs all steps and extracts production data as dataframe. Optionally a prior can be added on prompted teams using `apply_prompted_prior()` to this output, editing the dataframe to force a prior which assumes similar performance to last years promoted teams (e.g. assume Leicster perform similarly to Burnley and gradually correct this as new data appears).
+`get_production_data()` performs all steps and extracts production data as dataframe. Optionally a prior can be added on promoted teams using `apply_promoted_prior()` to this output, editing the dataframe to force a prior which assumes similar performance to last years promoted teams (e.g. assume Leicster perform similarly to Burnley and gradually correct this as new data appears).
 
 
 ### regressor.py
