@@ -1,0 +1,77 @@
+{
+	"PL": {
+		"name":"premier_league_england",
+		"promoted": {
+			"leicester_city":"luton_town",
+			"ipswich_town":"burnley",
+			"southampton":"sheffield_united"
+		},
+		"relegated": null,
+		"country_888_sport":"England",
+		"league_888_sport":"Premier League"
+	},
+
+	"ELC": {
+		"name": "championship_england",
+		"promoted": null,
+		"relegated": null,
+		"country_888_sport":"England",
+		"league_888_sport":"The Championship"
+	},
+
+	"PPL": {
+		"name": "primeria_liga_portugal",
+		"promoted": null,
+		"relegated": null,
+		"country_888_sport":"Portugal",
+		"league_888_sport":"Primeira Liga"
+	},
+
+	"DED": {
+		"name": "eredivisie_netherlands",
+		"promoted": null,
+		"relegated": null,
+		"country_888_sport":"Netherlands",
+		"league_888_sport":"Eredivisie"
+	},
+
+	"BL1": {
+		"name": "bundesliga_germany",
+		"promoted": null,
+		"relegated": null,
+		"country_888_sport":"Germany",
+		"league_888_sport":"Bundesliga"
+	},
+
+	"FL1": {
+		"name": "ligue_1_france",
+		"promoted": null,
+		"relegated": null,
+		"country_888_sport":"France",
+		"league_888_sport":"Ligue 1"
+	},
+
+	"SA": {
+		"name": "serie_a_italy",
+		"promoted": null,
+		"relegated": null,
+		"country_888_sport":"Italy",
+		"league_888_sport":"Serie A"
+	},
+
+	"PD": {
+		"name": "la_liga_spain",
+		"promoted": null,
+		"relegated": null,
+		"country_888_sport":"Spain",
+		"league_888_sport":"La Liga"
+	},
+
+	"BSA": {
+		"name": "serie_a_brazil",
+		"promoted": null,
+		"relegated": null,
+		"country_888_sport":"Brazil",
+		"league_888_sport":"Brasileirao Serie A"
+	}
+}
