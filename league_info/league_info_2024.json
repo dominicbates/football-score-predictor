@@ -13,10 +13,26 @@
 
 	"ELC": {
 		"name": "championship_england",
-		"promoted": null,
-		"relegated": null,
+		"promoted": {
+			"luton_town":"leicester_city",
+			"burnley":"ipswich_town",
+			"sheffield_united":"southampton"
+		},
+		"relegated": {
+			"portsmouth":"birmingham_city",
+			"derby_county":"huddersfield_town_afc",
+			"oxford_united":"rotherham_united"
+		},
 		"country_888_sport":"England",
 		"league_888_sport":"The Championship"
+	},
+
+	"BL1": {
+		"name": "bundesliga_germany",
+		"promoted": null,
+		"relegated": null,
+		"country_888_sport":"Germany",
+		"league_888_sport":"Bundesliga"
 	},
 
 	"PPL": {
@@ -33,14 +49,6 @@
 		"relegated": null,
 		"country_888_sport":"Netherlands",
 		"league_888_sport":"Eredivisie"
-	},
-
-	"BL1": {
-		"name": "bundesliga_germany",
-		"promoted": null,
-		"relegated": null,
-		"country_888_sport":"Germany",
-		"league_888_sport":"Bundesliga"
 	},
 
 	"FL1": {
